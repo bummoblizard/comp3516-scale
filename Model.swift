@@ -4,6 +4,18 @@ import Foundation
 import Accelerate
 
 class WeightModel {
+    
+    enum Model: Hashable {
+        case modelOne
+        case modelTwo
+        case modelThree
+    }
+    
+    struct PredictionResult {
+        var value: Double
+        var upperBound: Double
+        var lowerBound: Double
+    }
 
     // MODEL 1: Simple linear regression model
     class ModelOne {
@@ -18,7 +30,7 @@ class WeightModel {
             [-3.21324068e02, 3.02921752e04, 4.84490253e05]
         ]
 
-        func evaluate(maaX: Double, maaZ: Double) -> Double {
+        func evaluate(maaX: Double, maaZ: Double) -> PredictionResult {
             let comb_array = [[1], [maaX], [maaZ]]
             let variable = mse * (comb_array.transpose() * cov_matrix * comb_array)[0][0]
 
@@ -30,7 +42,7 @@ class WeightModel {
             print("Estimated weight: \(prediction)g")
             print("95% Confidence Interval: (\(lower_bound), \(upper_bound))")
             print("")
-            return prediction
+            return PredictionResult(value: prediction, upperBound: upper_bound, lowerBound: lower_bound)
         }
     }
 
@@ -49,7 +61,7 @@ class WeightModel {
             [1.71328012e07, -2.50578575e10, -3.00572982e10, 4.40373477e13]
         ]
 
-        func evaluate(maaX: Double, maaZ: Double) -> Double {
+        func evaluate(maaX: Double, maaZ: Double) -> PredictionResult {
             let comb_array = [[1], [maaX], [maaZ], [maaX * maaZ]]
             let variable = m2_mse * (comb_array.transpose() * m2_cov_matrix * comb_array)[0][0]
 
@@ -61,7 +73,7 @@ class WeightModel {
             print("Estimated weight: \(prediction)g")
             print("95% Confidence Interval: (\(lower_bound), \(upper_bound))")
             print("")
-            return prediction
+            return PredictionResult(value: prediction, upperBound: upper_bound, lowerBound: lower_bound)
         }
     }
 
@@ -78,7 +90,7 @@ class WeightModel {
             [-3.16976527e02, 2.19748690e04, 4.85361130e05]
         ]
 
-        func evaluate(maaX: Double, maaZ: Double) -> Double {
+        func evaluate(maaX: Double, maaZ: Double) -> PredictionResult {
             let comb_array = [[1], [maaX], [maaZ]]
             let variable = m3_mse * (comb_array.transpose() * cov_matrix * comb_array)[0][0]
 
@@ -95,11 +107,11 @@ class WeightModel {
             print("Estimated weight: \(prediction)g")
             print("95% Confidence Interval: (\(lower_bound), \(upper_bound))")
             print("")
-            return prediction
+            return PredictionResult(value: prediction, upperBound: upper_bound, lowerBound: lower_bound)
         }
     }
 
-    func predict(inputX: [Double], inputZ: [Double]){
+    func predict(inputX: [Double], inputZ: [Double], with model: Model) -> PredictionResult {
 
         // Step 1: Calculate the mean absolute amplitude (MAA)
         // Subtract the mean from the full array
@@ -114,10 +126,14 @@ class WeightModel {
         let maaZ = normZ.map { abs($0) }.reduce(0, +) / Double(normZ.count)
 
         // Step 2: Simply plug in the values for each model
-        _ = ModelOne().evaluate(maaX: maaX, maaZ: maaZ)
-        _ = ModelTwo().evaluate(maaX: maaX, maaZ: maaZ)
-        _ = ModelThree().evaluate(maaX: maaX, maaZ: maaZ)
-
+        switch model{
+        case .modelOne:
+            return ModelOne().evaluate(maaX: maaX, maaZ: maaZ)
+        case .modelTwo:
+            return ModelTwo().evaluate(maaX: maaX, maaZ: maaZ)
+        case .modelThree:
+            return ModelThree().evaluate(maaX: maaX, maaZ: maaZ)
+        }
     }
 }
 
@@ -154,7 +170,7 @@ extension [[Double]]{
 
         // Using A, B, C and M, N, K as defined
 
-        // The stride is the distance between elements to read. 
+        // The stride is the distance between elements to read.
         // To use all consecutive elements, set the stride to 1
         vDSP_mmulD(
             A, vDSP_Stride(1),
@@ -198,10 +214,10 @@ extension WeightModel {
         // 1000 random values
         let inputX = (0..<1000).map { _ in Double.random(in: 0...1) }
         let inputZ = (0..<1000).map { _ in Double.random(in: 0...1) }
-        predict(inputX: inputX, inputZ: inputZ)
+        predict(inputX: inputX, inputZ: inputZ, with: .modelOne)
     }
     
 }
 
 // WeightModel().testMatrixMultiply()
-WeightModel().testPredict()
+// WeightModel().testPredict()
