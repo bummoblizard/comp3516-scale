@@ -19,20 +19,20 @@ class WeightModel {
 
     // MODEL 1: Simple linear regression model
     class ModelOne {
-        let intercept = 129.785961
-        let x = -367805.903315
-        let z = 406062.220123
-        let mse = 3260.2169
+        let intercept = 206.722278
+        let x = -211745.508432
+        let z = 42899.895999
+        // let mse = 3260.2169
         let t_dist = 1.677
         let cov_matrix = [
-            [5.04065961e-01, -3.99255966e02, -3.21324068e02],
-            [-3.99255966e02, 5.31714904e05, 3.02921752e04],
-            [-3.21324068e02, 3.02921752e04, 4.84490253e05]
+            [ 3.86827982e03, -7.51601005e05, -6.05802440e06],
+            [-7.51601005e05,  3.23745300e09, -2.30770177e09],
+            [-6.05802440e06, -2.30770177e09,  1.35601197e10]
         ]
 
         func evaluate(maaX: Double, maaZ: Double) -> PredictionResult {
             let comb_array = [[1], [maaX], [maaZ]]
-            let variable = mse * (comb_array.transpose() * cov_matrix * comb_array)[0][0]
+            let variable = (comb_array.transpose() * cov_matrix * comb_array)[0][0]
 
             let prediction = intercept + x * maaX + z * maaZ
             let lower_bound = prediction - t_dist * variable.squareRoot()
@@ -48,22 +48,22 @@ class WeightModel {
 
     // MODEL 2: Linear regression model with interactions
     class ModelTwo {
-        let m2_intercept = -418.4162
-        let m2_x = 433976.1456
-        let m2_z = 1367812.5280
-        let m2_xz = -1409073178.496
-        let m2_mse = 2370.297301720971
+        let m2_intercept = -412.6509
+        let m2_x = 744862.7
+        let m2_z = 1218036
+        let m2_xz = -1803891068.96
+        // let m2_mse = 2370.297301720971
         let m2_t_dist = 1.678
         let m2_cov_matrix = [
-            [7.16960988e00, -1.01480558e04, -1.20151644e04, 1.71328012e07],
-            [-1.01480558e04, 1.47899810e07, 1.71333089e07, -2.50578575e10],
-            [-1.20151644e04, 1.71333089e07, 2.09998306e07, -3.00572982e10],
-            [1.71328012e07, -2.50578575e10, -3.00572982e10, 4.40373477e13]
+            [ 1.20756103e05, -1.81734049e08, -2.27939949e08, 3.41404045e11],
+            [-1.81734049e08,  2.82581222e11,  3.41393001e11, -5.27291017e14],
+            [-2.27939949e08,  3.41393001e11,  4.34357637e11, -6.47745393e14],
+            [ 3.41404045e11, -5.27291017e14, -6.47745393e14, 9.94320958e17]
         ]
 
         func evaluate(maaX: Double, maaZ: Double) -> PredictionResult {
             let comb_array = [[1], [maaX], [maaZ], [maaX * maaZ]]
-            let variable = m2_mse * (comb_array.transpose() * m2_cov_matrix * comb_array)[0][0]
+            let variable = (comb_array.transpose() * m2_cov_matrix * comb_array)[0][0]
 
             let prediction = m2_intercept + m2_x * maaX + m2_z * maaZ + m2_xz * maaX * maaZ
             let lower_bound = prediction - m2_t_dist * variable.squareRoot()
@@ -79,20 +79,20 @@ class WeightModel {
 
     // MODEL 3: log transformed model
     class ModelThree {
-        let m3_intercept = 6.626590
-        let m3_x = -5705.442683
-        let m3_z = 2525.894158
-        let m3_mse = 0.2096351825845287
+        let m3_intercept = 5.837609
+        let m3_x = -2368.177400
+        let m3_z = 252.968484
+        // let m3_mse = 0.2096351825845287
         let m3_t_dist = 1.679
         let cov_matrix = [
-            [5.28150219e-01, -4.44846842e02, -3.16976527e02],
-            [-4.44846842e02, 6.18116534e05, 2.19748690e04],
-            [-3.16976527e02, 2.19748690e04, 4.85361130e05]
+            [ 3.26631827e-01, -6.34640772e01, -5.11530621e02],
+            [-6.34640772e01,  2.73365743e05, -1.94858925e05],
+            [-5.11530621e02, -1.94858925e05,  1.14499645e06]
         ]
 
         func evaluate(maaX: Double, maaZ: Double) -> PredictionResult {
             let comb_array = [[1], [maaX], [maaZ]]
-            let variable = m3_mse * (comb_array.transpose() * cov_matrix * comb_array)[0][0]
+            let variable = (comb_array.transpose() * cov_matrix * comb_array)[0][0]
 
             let log_prediction = m3_intercept + m3_x * maaX + m3_z * maaZ
             let log_lower_bound = log_prediction - m3_t_dist * variable.squareRoot()
