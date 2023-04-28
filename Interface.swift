@@ -58,10 +58,6 @@ struct ContentView: View {
     @State var modelSelection: WeightModel.Model = .modelOne
     @ObservedObject var sensorsManager = SensorsManager()
     
-//    @State var predictedValue: Double = 0.0
-//    @State var upperBoundValue: Double = 0.0
-//    @State var lowerBoundValue: Double = 0.0
-    
     @State var isMeasuring = true
     @State var predictionResult: AggregatedResult? = nil
     
@@ -124,24 +120,6 @@ struct ContentView: View {
     var dataCollectionView: some View {
         
         VStack {
-            Group {
-//                Chart(Array(sensorsManager.accelerometerData.enumerated()), id: \.element.id) { id, dataPoint in
-//                    LineMark(x: .value("Time", id), y: .value("Acceleration", dataPoint.data.x), series: .value("Accelerometer", "X"))
-//                        .foregroundStyle(.red)
-//                }
-//                Chart(Array(sensorsManager.accelerometerData.enumerated()), id: \.element.id) { id, dataPoint in
-//                    LineMark(x: .value("Time", id), y: .value("Acceleration", dataPoint.data.y), series: .value("Accelerometer", "Y"))
-//                        .foregroundStyle(.blue)
-//                }
-//
-//                Chart(Array(sensorsManager.accelerometerData.enumerated()), id: \.element.id) { id, dataPoint in
-//                    LineMark(x: .value("Time", id), y: .value("Acceleration", dataPoint.data.z), series: .value("Accelerometer", "Z"))
-//                        .foregroundStyle(.green)
-//                }
-//                .chartLegend(position: .bottom)
-                
-            }
-            
             HStack {
                 Button("Save"){
                     guard sensorsManager.accelerometerData.count >= 1000 else {
@@ -213,10 +191,7 @@ struct ContentView: View {
                 predictionResult = nil
                 isMeasuring = true
             }
-            
-//            Toggle("Vibration (10Hz)", isOn: $isVibrating)
-            
-            
+
         }
         .padding()
     }

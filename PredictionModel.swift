@@ -137,6 +137,8 @@ class WeightModel {
     }
 }
 
+
+// Auxiliary functions for matrix operations
 extension [[Double]]{
 
     func transpose() -> [[Double]] {
